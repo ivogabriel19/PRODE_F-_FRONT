@@ -23,7 +23,12 @@ export interface Race {
   round: string;
   raceName: string;
   date: string;
-  country: string; // <-- Asumo que se llama 'country'
-  circuitName: string; // <-- Asumo que se llama 'circuitName'
-  // Añade o quita propiedades basándote en el console.log del Paso 1
+  time: string;
+  Circuit: {
+    circuitId: string;
+    circuitName: string;
+    Location: {
+      country: string;
+    };
+  };
 }

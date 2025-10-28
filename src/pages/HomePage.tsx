@@ -15,26 +15,18 @@ const HomePage: React.FC = () => {
   const ANIO_ACTUAL = 2024; // Puedes cambiar esto o hacerlo dinámico
 
   // useEffect se ejecuta 1 vez cuando el componente se monta
+  // ... (componente y useEffect) ...
   useEffect(() => {
     const fetchRaces = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // 1. Llama a tu API
         const response = await api.get(`/obtener/carreras/${ANIO_ACTUAL}`);
         
-        // 2. GUARDA LOS DATOS
-        //    'response.data' ES el array de carreras
-        //    (o { carreras: [...] } si no cambiaste tu controller)
-        
-        // --- ARREGLO ---
-        // Si tu controller devuelve res.json(carreras)
+        // ¡Esta línea ahora SÍ es correcta!
+        // response.data es el array de objetos que definimos en el backend.
         setRaces(response.data); 
-        console.log('DATOS REALES RECIBIDOS:', response.data); // <--- ¡AÑADE ESTO!
-        
-        // Si tu controller devuelve res.json({ carreras })
-        // setRaces(response.data.carreras); 
 
       } catch (err: any) {
         setError(err.message || "Error al cargar las carreras");
@@ -42,9 +34,8 @@ const HomePage: React.FC = () => {
         setLoading(false);
       }
     };
-
     fetchRaces();
-  }, [ANIO_ACTUAL]); // El 'useEffect' depende del año
+  }, [ANIO_ACTUAL]);
 
   // --- Renderizado Condicional ---
   if (loading) {
@@ -57,19 +48,15 @@ const HomePage: React.FC = () => {
 
  return (
     <div>
-      <h2>¡Hola {user?.username}!</h2>
-      <p>Este es el calendario de la temporada {ANIO_ACTUAL}. ¡Elige una carrera para predecir!</p>
+      {/* ... (saludo) ... */}
       
       <div style={{ marginTop: '20px' }}>
         {races.map((race) => (
           <div key={race.round} style={{ border: '1px solid #ccc', padding: '10px', margin: '5px' }}>
             <h3>{race.raceName}</h3>
-            
-            {/* --- ARREGLO AQUÍ --- */}
-            <p><strong>Circuito:</strong> {race.circuitName}</p>
-            <p><strong>País:</strong> {race.country}</p>
+            {/* Esta línea (que daba el error) ahora SÍ funcionará */}
+            <p><strong>País:</strong> {race.Circuit.Location.country}</p>
             <p><strong>Fecha:</strong> {race.date}</p>
-            
             <button>Predecir</button>
           </div>
         ))}
