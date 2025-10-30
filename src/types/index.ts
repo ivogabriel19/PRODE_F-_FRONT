@@ -32,3 +32,34 @@ export interface Race {
     };
   };
 }
+
+export interface Driver {
+  driverId: string;
+  givenName: string;
+  familyName: string;
+  code: string;
+}
+
+export interface Prediction {
+  _id: string; // El ID de la predicción
+  userId: string;
+  raceId: string;
+  raceYear: string;
+  raceDate: string; // La fecha que guardamos
+  prediccion: {
+    p1: string;
+    p2: string;
+    p3: string;
+    // Agrega pole, vueltaRapida, etc., si los tienes
+  };
+  // 'createdAt' y 'updatedAt' Mongoose los añade automáticamente
+  submittedAt: string; 
+}
+
+export interface LeaderboardUser {
+  _id: string;
+  username: string;
+  score: number;
+  exactMatches: number;
+  perfectPredictions: number;
+}
