@@ -15,6 +15,7 @@ export interface AuthState {
   isAuthenticated: boolean;
   login: (token: string, user: User) => void;
   logout: () => void;
+  loadingAuth: boolean;
 }
 
 // Interfaz para los datos de carrera que vienen de la API
@@ -56,10 +57,36 @@ export interface Prediction {
   submittedAt: string; 
 }
 
+export interface Result {
+  _id: string; // El ID de la predicción
+  userId: string;
+  raceId: string;
+  raceYear: string;
+  raceDate: string; // La fecha que guardamos
+  prediccion: {
+    p1: string;
+    p2: string;
+    p3: string;
+    // Agrega pole, vueltaRapida, etc., si los tienes
+  };
+  // 'createdAt' y 'updatedAt' Mongoose los añade automáticamente
+  submittedAt: string; 
+  processedAt: string
+  score: number
+}
+
 export interface LeaderboardUser {
   _id: string;
   username: string;
   score: number;
   exactMatches: number;
   perfectPredictions: number;
+}
+
+export interface Notification {
+  _id: string;
+  userId: string;
+  message: string;
+  createdAt: string; // (es un string de fecha ISO)
+  read: boolean;
 }

@@ -3,22 +3,23 @@ import { useAuth } from '../context/AuthContext';
 import { Navigate, Outlet } from 'react-router-dom';
 
 const AdminRoute: React.FC = () => {
-  const { user, loadingAuth } = useAuth(); 
+  // 1. Obtenemos el usuario y el estado de carga del contexto
+  const { user, loadingAuth } = useAuth(); // Asumo que tu hook se llama así
 
+  // 2. Si todavía está cargando la info del usuario, mostramos un 'loading'
   if (loadingAuth) {
-    return <div>Verificando autenticación...</div>;
+    return <div>Verificando permisos...</div>;
   }
 
-  // Si no está cargando, verificamos
+  // 3. Si cargó Y el usuario existe Y es admin...
   if (user && user.role === 'admin') {
-    return <Outlet />; // El usuario es admin, renderiza AdminPage
+    // ...¡Lo dejamos pasar!
+    // <Outlet /> es el "portal" donde React Router renderizará la <AdminPage />
+    return <Outlet />; 
   }
 
-  if (user) {
-    return <Navigate to="/" replace />; // Logueado, pero NO admin
-  }
-
-  return <Navigate to="/login" replace />; // No logueado
+  // 4. Si no es admin (o no está logueado), lo rebotamos a la Home
+  return <Navigate to="/" replace />;
 };
 
 export default AdminRoute;

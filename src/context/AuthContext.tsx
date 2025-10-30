@@ -9,15 +9,27 @@ const AuthContext = createContext<AuthState>(null as any);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [loadingAuth, setLoadingAuth] = useState(true);
 
   // 3. Al cargar la app, revisamos localStorage
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+useEffect(() => {
+    // Usamos try/finally para asegurarnos de que el 'loading' termine
+    try {
+      const storedToken = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
+
+      if (storedToken && storedUser) {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      // Si localStorage está corrupto, mejor desloguear
+      console.error("Error al parsear auth data de localStorage", error);
+      logout(); // Esto limpiará el localStorage
+    } finally {
+      // --- CAMBIO 2: Avisar que terminamos de cargar ---
+      // Esto pasa SIEMPRE, encontremos usuario o no.
+      setLoadingAuth(false);
     }
   }, []);
 
@@ -40,7 +52,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const isAuthenticated = !!token;
 
   return (
-    <AuthContext.Provider value={{ token, user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ token, user, isAuthenticated, login, logout, loadingAuth }}>
       {children}
     </AuthContext.Provider>
   );

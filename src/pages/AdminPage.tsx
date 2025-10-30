@@ -17,6 +17,14 @@ const AdminPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  const currentYear = new Date().getFullYear();
+  const years = [
+  currentYear, 
+  currentYear - 1, 
+  currentYear - 2, 
+  currentYear - 3
+];
+
   // 1. Cargar Carreras cuando cambia el año
   useEffect(() => {
     const fetchRaces = async () => {
@@ -55,13 +63,22 @@ const AdminPage: React.FC = () => {
       return;
     }
 
+    const selectedRace = races.find(r => r.Circuit.circuitId === selectedRaceId);
+
+    if (!selectedRace) {
+      setError("Error interno: No se pudo encontrar la carrera seleccionada.");
+      return;
+    }
+    const selectedRound = selectedRace.round;
+
     try {
       setLoadingSubmit(true);
       
       // CERTEZA: El payload que tu backend espera
       const payload = {
         raceYear: year,
-        raceId: selectedRaceId,
+        raceId: selectedRaceId, // "americas" (para processPredictions)
+        round: selectedRound      // "20" (para obtenerResultadoCarrera)
       };
       
       // CERTEZA: La ruta de tu backend
@@ -90,9 +107,11 @@ const AdminPage: React.FC = () => {
         <div>
           <label>Temporada: </label>
           <select value={year} onChange={(e) => setYear(e.target.value)}>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            {/* Agrega más años si es necesario */}
+            {years.map(y => (
+            <option key={y} value={y.toString()}>
+              {y}
+            </option>
+          ))}
           </select>
         </div>
 
